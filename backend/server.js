@@ -1,9 +1,9 @@
 // Import required modules
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import path from "path";
-import connectDB from "./config/db.js";
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const path = require("path");
+const connectDB = require("./config/db");
 
 // Load environment variables
 dotenv.config();
