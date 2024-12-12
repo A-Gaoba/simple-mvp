@@ -16,7 +16,7 @@ exports.generateContent = async (req, res) => {
       Based on the following CV:
       ${cv.content}
 
-      Generate a tailored cover letter or proposal for the following prompt:
+      Create a concise, engaging, and highly tailored cover letter or proposal that directly aligns the candidate's skills and experience with the job described below:
       ${prompt}
     `);
 
