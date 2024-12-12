@@ -5,13 +5,11 @@ exports.generateContent = async (req, res) => {
   try {
     const { cvId, prompt } = req.body;
 
-    // Fetch CV from the database
     const cv = await CV.findOne({ _id: cvId, user: req.user.id });
     if (!cv) {
       return res.status(404).json({ message: "CV not found" });
     }
 
-    // Format the prompt
     const formattedPrompt = `
       Based on the following CV:
       ${cv.content}
@@ -20,7 +18,6 @@ exports.generateContent = async (req, res) => {
       ${prompt}
     `;
 
-    // Generate content using the helper function
     const generatedContent = await generateLLMContent(formattedPrompt);
 
     if (!generatedContent) {
