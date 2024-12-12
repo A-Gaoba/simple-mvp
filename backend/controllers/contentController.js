@@ -1,26 +1,31 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const CV = require("../models/CV");
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const { generateLLMContent } = require("../utils/generateLLMContent");
 
 exports.generateContent = async (req, res) => {
   try {
     const { cvId, prompt } = req.body;
 
+    // Fetch CV from the database
     const cv = await CV.findOne({ _id: cvId, user: req.user.id });
-    if (!cv) return res.status(404).json({ message: "CV not found" });
+    if (!cv) {
+      return res.status(404).json({ message: "CV not found" });
+    }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-    const result = await model.generateContent(`
+    // Format the prompt
+    const formattedPrompt = `
       Based on the following CV:
       ${cv.content}
 
       Create a concise, engaging, and highly tailored cover letter or proposal that directly aligns the candidate's skills and experience with the job described below:
       ${prompt}
-    `);
+    `;
 
-    const generatedContent = result.response.text();
+    // Generate content using the helper function
+    const generatedContent = await generateLLMContent(formattedPrompt);
+
+    if (!generatedContent) {
+      return res.status(500).json({ message: "Failed to generate content" });
+    }
 
     res.json({ generatedContent });
   } catch (error) {
